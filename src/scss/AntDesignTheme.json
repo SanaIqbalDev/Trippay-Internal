@@ -1,0 +1,21 @@
+{
+  "token": {
+    "algorithm": true,
+    "colorPrimary": "#9747ff",
+    "colorBgLayout": "#ffffff",
+    "wireframe": true,
+    "fontFamily": "'Inter', sans-serif",
+    "colorBgBase": "#FFF",
+    "colorTextBase": "#121414",
+    "colorText": "#121414",
+    "controlHeight": 40,
+    "controlHeightLG": 48,
+    "controlHeightSM": 32,
+    "controlHeightXS": 20
+  },
+  "components": {
+    "Button": {
+      "colorPrimary": "#7f56d9"
+    }
+  }
+}

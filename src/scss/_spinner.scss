@@ -1,0 +1,48 @@
+.custom-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; // Set the width as required
+  height: 100%; // Set the height as required
+
+  .spinner {
+    animation: spin 1.2s linear infinite;
+    width: 80px; // Set the SVG width
+    height: 80px; // Set the SVG height
+
+    .path {
+      stroke: #ddd; // Color for the full circle
+      stroke-linecap: round;
+      stroke-dasharray: 150;
+      stroke-dashoffset: 0;
+      animation: dash 1.5s ease-in-out infinite;
+    }
+
+    .path.segment {
+      stroke: #9254de; // Your accent color
+      stroke-dasharray: 20; // Length of the segment
+      stroke-dashoffset: -15; // Adjust this to move the segment
+    }
+  }
+
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 150;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -35;
+    }
+    100% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -124;
+    }
+  }
+}
