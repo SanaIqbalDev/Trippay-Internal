@@ -1,12 +1,17 @@
 import { Button, Image } from "antd";
 import { PinInput } from "react-input-pin-code"; // ES Module
 
-import ShieldIcon from "../../assets/icons/ic-shield.svg";
+import ShieldIcon from "../assets/icons/ic-shield.svg";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const OtpForm = () => {
+interface AuthenticationFormProps {
+  getCode: (value: string) => void;
+}
+
+const OtpForm: React.FC<AuthenticationFormProps> = ({ getCode }) => {
   const [values, setValues] = useState(["", "", "", "", ""]);
+
   return (
     <div className="form-container">
       <Image src={ShieldIcon} preview={false} />
@@ -35,20 +40,28 @@ const OtpForm = () => {
         >
           Use different phone number
         </span>
-        <div style={{display:"flex",flexDirection:"column", width: "100%", gap:"12px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            gap: "12px",
+          }}
+        >
           <Button
             type="primary"
             htmlType="submit"
             block
+            disabled={values.join("").length < 5}
+            onSubmit={() => getCode(values.join(""))}
             className="submitButton"
           >
-            <Link to={""}>Continue</Link>
+            Continue
           </Button>
           <Button
             type="default"
             htmlType="submit"
             block
-            className="submitButton"
             style={{ color: "#98A2B3" }}
           >
             <Link to={""}>You can resend code in 55 s</Link>

@@ -116,7 +116,7 @@ body {
 .social-button-container {
   display: flex;
   gap: 16px;
-  >*{
+  > * {
     cursor: pointer;
   }
 }
@@ -141,9 +141,14 @@ body {
   height: 44px;
   display: flex;
   font-weight: 600;
+  align-items: center;
   font-size: 16px;
   justify-content: center;
   padding: 10px;
+}
+
+.submitButton {
+  background-color: var(--brand-primary);
 }
 
 .form-container {
@@ -209,24 +214,25 @@ body {
 .ant-btn-default {
   color: var(--text-secondary);
 }
-.highlighted-text{
+.highlighted-text {
   color: var(--brand-solid-alt);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
 }
-.brKUCO>input{
+.brKUCO > input {
   font-size: 2rem;
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  border: 1px solid #EAECF0;
+  border: 1px solid #eaecf0;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  
 }
-.brKUCO>input:focus{
-    border: 1px solid #7F56D9;
-
+.brKUCO > input:focus {
+  border: 1px solid #7f56d9;
 }
 
-.brKUCO{
+.brKUCO {
   width: 327px;
   display: flex;
   justify-content: space-between;

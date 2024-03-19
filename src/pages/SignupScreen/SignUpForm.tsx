@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, Input, Button, Checkbox, Image } from "antd";
 import TrippayLogo from "../../assets/images/trippay-logo.svg";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { GoogleIconComponent } from "../../components/GoogleIconComponent";
 
 // Step 3: Define Zod schema
 const schema = z.object({
@@ -14,7 +15,7 @@ const schema = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters long" }),
-  terms: z.boolean().refine((val) => val === true, {
+  terms: z.boolean().refine((val) => val, {
     message: "You must accept the User Agreement and Privacy Policy",
   }),
 });
@@ -23,7 +24,7 @@ const schema = z.object({
 type SignupFormInputs = z.infer<typeof schema>;
 
 const SignUpForm: React.FC = () => {
-  // Step 4: Setup useForm with Zod resolver
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -34,6 +35,7 @@ const SignUpForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
     console.log(data);
+    navigate("authenticationcode", { replace: true });
   };
   return (
     <div className="form-container">
@@ -101,16 +103,25 @@ const SignUpForm: React.FC = () => {
               render={({ field }) => (
                 <div className="flex flex-col">
                   <Input {...field} placeholder="Create a password" />
-                  <span className="sub-heading" style={{fontSize:"14px"}}>Must be at least 8 characters.</span>
+                  <span
+                    className="sub-heading"
+                    style={{ fontSize: "14px", textAlign: "start" }}
+                  >
+                    Must be at least 8 characters.
+                  </span>
                 </div>
               )}
             />
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item
+            validateStatus={errors.terms ? "error" : ""}
+            help={errors.terms?.message}
+          >
             <Controller
               name="terms"
               control={control}
+              rules={{ required: true }}
               render={({ field }) => (
                 <Checkbox {...field} checked={field.value}>
                   I certify that I’m 18 years of age or older, and I agree to
@@ -122,14 +133,28 @@ const SignUpForm: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              className="submitButton"
+            >
               Sign up
+            </Button>
+          </Form.Item>
+          <Form.Item className="formItem">
+            <Button
+              block
+              icon={<GoogleIconComponent />}
+              className="googleButton"
+            >
+              Sign in with Google
             </Button>
           </Form.Item>
         </Form>
       </div>
       <span style={{ color: "#475467" }}>
-        Don't have an account?
+        Already have an account?
         <span
           style={{
             color: "#6941C6",
@@ -138,7 +163,7 @@ const SignUpForm: React.FC = () => {
             marginLeft: "5px",
           }}
         >
-          Sign up
+          <Link to={"/login"}>Sign In</Link>
         </span>
       </span>
     </div>

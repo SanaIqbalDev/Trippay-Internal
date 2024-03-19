@@ -9,7 +9,7 @@ const SplashScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
         setIsLoading(false);
-        navigate("/signup");
+        navigate("/login");
     }, 3000);
 
     // Clear timeout if the component is unmounted
