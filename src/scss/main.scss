@@ -182,15 +182,7 @@ body {
   line-height: 24px;
   text-align: center;
 }
-.item-remember {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 500;
-}
-.item-remember::after {
-  content: "Forget Password";
+.forget-password {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-brand-secondary);
@@ -236,4 +228,33 @@ body {
   width: 327px;
   display: flex;
   justify-content: space-between;
+}
+.default-card {
+  border: 1px solid #f3f3f3;
+  border-radius: 16px;
+  background-color: white;
+}
+
+.default-card:hover {
+  border-color: var(--button-primary-border);
+  background-color: #f9f5ff;
+  // box-shadow: 0.2px 0.2px 5px 0.2px var(--button-primary-border);
+
+  .icon-container {
+    border: none;
+    border-radius: 100px;
+    background-color: var(--button-primary-border);
+
+    .ant-image {
+    }
+  }
+}
+
+.icon-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9fafb;
 }

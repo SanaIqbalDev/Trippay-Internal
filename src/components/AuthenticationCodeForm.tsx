@@ -6,10 +6,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface AuthenticationFormProps {
+  data:string;
+  isPhone:boolean;
   getCode: (value: string) => void;
 }
 
-const OtpForm: React.FC<AuthenticationFormProps> = ({ getCode }) => {
+const OtpForm: React.FC<AuthenticationFormProps> = ({data,isPhone, getCode }) => {
   const [values, setValues] = useState(["", "", "", "", ""]);
 
   return (
@@ -18,7 +20,10 @@ const OtpForm: React.FC<AuthenticationFormProps> = ({ getCode }) => {
       <div className="form-header">
         <span className="main-heading">Authentication Code</span>
         <span className="sub-heading">
-          Enter 5-digit code we just texted to your phone number, +966123456789
+          {isPhone
+            ? "Enter 5-digit code we just texted to your phone number, "
+            : "Please enter the code we just sent to email, "}
+          {data}
         </span>
       </div>
       <div className="form-content">
@@ -38,7 +43,9 @@ const OtpForm: React.FC<AuthenticationFormProps> = ({ getCode }) => {
             cursor: "pointer",
           }}
         >
-          Use different phone number
+          {isPhone
+            ? "Use different phone number"
+            : "Use different email address"}
         </span>
         <div
           style={{
@@ -58,6 +65,7 @@ const OtpForm: React.FC<AuthenticationFormProps> = ({ getCode }) => {
           >
             Continue
           </Button>
+
           <Button
             type="default"
             htmlType="submit"

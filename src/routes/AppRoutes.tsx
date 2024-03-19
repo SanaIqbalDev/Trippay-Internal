@@ -1,10 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SplashScreen from "../pages/SplashScreen";
 import LoginScreen from "../pages/LoginScreen/LoginScreen";
-import AuthenticationCodeForm from "../components/AuthenticationCodeForm";
 import LoginForm from "../pages/LoginScreen/LoginForm";
 import SignupScreen from "../pages/SignupScreen/SignupScreen";
 import SignUpForm from "../pages/SignupScreen/SignUpForm";
+import PhoneInputForm from "../pages/SignupScreen/PhoneInputForm";
+import ForgetPasswordScreen from "../pages/ForgetPassword/ForgetPasswordScreen";
 const AppRoutes = () => {
   const router = createBrowserRouter([
     {
@@ -18,12 +19,12 @@ const AppRoutes = () => {
         {
           index: true,
           element: <LoginForm />,
-        },
-        {
-          path: "authenticationcode",
-          element: <AuthenticationCodeForm />,
-        },
+        }
       ],
+    },
+    {
+      path: "/forgetpassword",
+      element: <ForgetPasswordScreen />,
     },
     {
       path: "/signup",
@@ -34,8 +35,8 @@ const AppRoutes = () => {
           element: <SignUpForm />,
         },
         {
-          path: "authenticationcode",
-          element: <AuthenticationCodeForm />,
+          path: "phone",
+          element: <PhoneInputForm />,
         },
       ],
     },
