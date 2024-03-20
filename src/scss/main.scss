@@ -258,3 +258,24 @@ body {
   justify-content: center;
   background-color: #f9fafb;
 }
+.custom-modal{
+  width: 564px;
+  height: max-content;
+  box-shadow: 0 10px 100px rgba(85, 94, 104, 0.04);
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid grey;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.ant-progress.ant-progress-status-success .ant-progress-bg
+{
+  background-color: var(--brand-primary);
+}
+.ant-progress.ant-progress-status-success .ant-progress-text{
+  color: var(--brand-primary);
+
+}

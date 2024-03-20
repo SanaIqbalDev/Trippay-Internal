@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PhoneInputForm from "../SignupScreen/PhoneInputForm";
 import ChooseOption from "./ChooseOption";
+import AddNewPassword from "./AddNewPassword";
 
 const ForgetPasswordScreen = () => {
   const [selectedOption, setSelectedOption] = useState("");
@@ -11,11 +12,29 @@ const ForgetPasswordScreen = () => {
       return <ChooseOption selectedOption={setSelectedOption} />;
     case "phone":
       return (
-        <PhoneInputForm inputType="phone" codeVerified={setIsCodeVerified} />
+        <>
+          {isCodeVerified ? (
+            <AddNewPassword />
+          ) : (
+            <PhoneInputForm
+              inputType="phone"
+              codeVerified={setIsCodeVerified}
+            />
+          )}
+        </>
       );
     case "email":
       return (
-        <PhoneInputForm inputType="email" codeVerified={setIsCodeVerified} />
+        <>
+          {isCodeVerified ? (
+            <AddNewPassword />
+          ) : (
+            <PhoneInputForm
+              inputType="email"
+              codeVerified={setIsCodeVerified}
+            />
+          )}
+        </>
       );
   }
 };

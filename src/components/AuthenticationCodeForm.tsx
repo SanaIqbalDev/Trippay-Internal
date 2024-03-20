@@ -6,14 +6,22 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface AuthenticationFormProps {
-  data:string;
-  isPhone:boolean;
+  data: string;
+  isPhone: boolean;
   getCode: (value: string) => void;
 }
 
-const OtpForm: React.FC<AuthenticationFormProps> = ({data,isPhone, getCode }) => {
+const OtpForm: React.FC<AuthenticationFormProps> = ({
+  data,
+  isPhone,
+  getCode,
+}) => {
   const [values, setValues] = useState(["", "", "", "", ""]);
 
+  const codeCompleted = (data: string) => {
+    console.log("data is ", data);
+    getCode(data);
+  };
   return (
     <div className="form-container">
       <Image src={ShieldIcon} preview={false} />
@@ -60,7 +68,7 @@ const OtpForm: React.FC<AuthenticationFormProps> = ({data,isPhone, getCode }) =>
             htmlType="submit"
             block
             disabled={values.join("").length < 5}
-            onSubmit={() => getCode(values.join(""))}
+            onClick={() => codeCompleted(values.join(""))}
             className="submitButton"
           >
             Continue

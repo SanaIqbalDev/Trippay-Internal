@@ -3,11 +3,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, Input, Button, Checkbox, Image } from "antd";
 import TrippayLogo from "../../assets/images/trippay-logo.svg";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { GoogleIconComponent } from "../../components/GoogleIconComponent";
 import AuthenticationCodeForm from "../../components/AuthenticationCodeForm";
 import SiderComponent from "../../components/SiderComponent";
+import PhoneInputForm from "./PhoneInputForm";
+import CompleteAccount from "./CompleteAccount";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -24,9 +26,12 @@ const schema = z.object({
 type SignupFormInputs = z.infer<typeof schema>;
 
 const SignUpForm: React.FC = () => {
-  
-  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [currentStep, setCurrentStep] = useState("signup");
   const [authCodeVal, setAuthCodeVal] = useState("");
+  const [submittedData, setSubmittedData] = useState<SignupFormInputs>();
+  const [emailAuthCode, setEmailAuthCode] = useState("");
+  const [phoneAuthCode, setPhoneAuthCode] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -37,149 +42,180 @@ const SignUpForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
     console.log(data);
-    setShowCodeInput(true);
+    setSubmittedData(data);
+    setCurrentStep("emailAuth");
   };
 
-  return (
-    <div className="login-container">
-      {showCodeInput ? (
-        <AuthenticationCodeForm phone={""} getCode={setAuthCodeVal} />
-      ) : (
-        // <PhoneInputForm />
-        <div className="form-container">
-          <div className="form-header">
-            <Image src={TrippayLogo} preview={false} />
-            <span className="main-heading">Create your account</span>
-            <span className="sub-heading">
-              Let’s get started with a free account.
+  useEffect(() => {
+    if (authCodeVal.length == 5) {
+      setCurrentStep("completionStep1");
+      //add condition of if auth code is correct...
+      // if (currentStep == "emailAuth") {
+      //   setEmailAuthCode(authCodeVal);
+      //   setCurrentStep("getUserPhone");
+      // } else if (currentStep == "phoneAuth") {
+      //   setPhoneAuthCode(authCodeVal);
+      //   setCurrentStep("completionStep1");
+      // }
+    }
+  }, [authCodeVal]);
+
+  switch (currentStep) {
+    case "signup":
+      return (
+        <div className="login-container">
+          <div className="form-container">
+            <div className="form-header">
+              <Image src={TrippayLogo} preview={false} />
+              <span className="main-heading">Create your account</span>
+              <span className="sub-heading">
+                Let’s get started with a free account.
+              </span>
+            </div>
+
+            <div className="form-content">
+              <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+                <Form.Item
+                  label="Name*"
+                  validateStatus={errors.name ? "error" : ""}
+                  help={errors.name?.message}
+                >
+                  <Controller
+                    name="name"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Input {...field} placeholder="Enter your name" />
+                    )}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Email*"
+                  validateStatus={errors.email ? "error" : ""}
+                  help={errors.email?.message}
+                >
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} placeholder="Enter your email" />
+                    )}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Agency Name*"
+                  validateStatus={errors.agencyName ? "error" : ""}
+                  help={errors.agencyName?.message}
+                >
+                  <Controller
+                    name="agencyName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} placeholder="Agency Name" />
+                    )}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Password*"
+                  validateStatus={errors.password ? "error" : ""}
+                  help={errors.password?.message}
+                >
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex flex-col">
+                        <Input {...field} placeholder="Create a password" />
+                        <span
+                          className="sub-heading"
+                          style={{ fontSize: "14px", textAlign: "start" }}
+                        >
+                          Must be at least 8 characters.
+                        </span>
+                      </div>
+                    )}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  validateStatus={errors.terms ? "error" : ""}
+                  help={errors.terms?.message}
+                >
+                  <Controller
+                    name="terms"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Checkbox {...field} checked={field.value}>
+                        I certify that I’m 18 years of age or older, and I agree
+                        to the{" "}
+                        <span className="highlighted-text">
+                          {" "}
+                          User Agreement
+                        </span>{" "}
+                        and{" "}
+                        <span className="highlighted-text">
+                          Privacy Policy.
+                        </span>
+                      </Checkbox>
+                    )}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    block
+                    className="submitButton"
+                  >
+                    Sign up
+                  </Button>
+                </Form.Item>
+                <Form.Item className="formItem">
+                  <Button
+                    block
+                    icon={<GoogleIconComponent />}
+                    className="googleButton"
+                  >
+                    Sign in with Google
+                  </Button>
+                </Form.Item>
+              </Form>
+            </div>
+            <span style={{ color: "#475467" }}>
+              Already have an account?
+              <span
+                style={{
+                  color: "#6941C6",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  marginLeft: "5px",
+                }}
+              >
+                <Link to={"/login"}>Sign In</Link>
+              </span>
             </span>
           </div>
-
-          <div className="form-content">
-            <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-              <Form.Item
-                label="Name*"
-                validateStatus={errors.name ? "error" : ""}
-                help={errors.name?.message}
-              >
-                <Controller
-                  name="name"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <Input {...field} placeholder="Enter your name" />
-                  )}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Email*"
-                validateStatus={errors.email ? "error" : ""}
-                help={errors.email?.message}
-              >
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} placeholder="Enter your email" />
-                  )}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Agency Name*"
-                validateStatus={errors.agencyName ? "error" : ""}
-                help={errors.agencyName?.message}
-              >
-                <Controller
-                  name="agencyName"
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} placeholder="Agency Name" />
-                  )}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Password*"
-                validateStatus={errors.password ? "error" : ""}
-                help={errors.password?.message}
-              >
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="flex flex-col">
-                      <Input {...field} placeholder="Create a password" />
-                      <span
-                        className="sub-heading"
-                        style={{ fontSize: "14px", textAlign: "start" }}
-                      >
-                        Must be at least 8 characters.
-                      </span>
-                    </div>
-                  )}
-                />
-              </Form.Item>
-
-              <Form.Item
-                validateStatus={errors.terms ? "error" : ""}
-                help={errors.terms?.message}
-              >
-                <Controller
-                  name="terms"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Checkbox {...field} checked={field.value}>
-                      I certify that I’m 18 years of age or older, and I agree
-                      to the{" "}
-                      <span className="highlighted-text"> User Agreement</span>{" "}
-                      and{" "}
-                      <span className="highlighted-text">Privacy Policy.</span>
-                    </Checkbox>
-                  )}
-                />
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  className="submitButton"
-                >
-                  Sign up
-                </Button>
-              </Form.Item>
-              <Form.Item className="formItem">
-                <Button
-                  block
-                  icon={<GoogleIconComponent />}
-                  className="googleButton"
-                >
-                  Sign in with Google
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-          <span style={{ color: "#475467" }}>
-            Already have an account?
-            <span
-              style={{
-                color: "#6941C6",
-                fontSize: "14px",
-                fontWeight: "600",
-                marginLeft: "5px",
-              }}
-            >
-              <Link to={"/login"}>Sign In</Link>
-            </span>
-          </span>
+          <SiderComponent />
         </div>
-      )}
-      <SiderComponent />
-    </div>
-  );
+      );
+
+    case "emailAuth":
+      return (
+        <AuthenticationCodeForm
+          data={submittedData?.email}
+          isPhone={false}
+          getCode={setAuthCodeVal}
+        />
+      );
+
+    // case "getUserPhone": return <PhoneInputForm inputType="phone"/>
+    case "completionStep1":
+      return <CompleteAccount />;
+  }
 };
 
 export default SignUpForm;

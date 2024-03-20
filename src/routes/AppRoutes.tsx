@@ -6,6 +6,7 @@ import SignupScreen from "../pages/SignupScreen/SignupScreen";
 import SignUpForm from "../pages/SignupScreen/SignUpForm";
 import PhoneInputForm from "../pages/SignupScreen/PhoneInputForm";
 import ForgetPasswordScreen from "../pages/ForgetPassword/ForgetPasswordScreen";
+import AuthenticationCodeForm from "../components/AuthenticationCodeForm";
 const AppRoutes = () => {
   const router = createBrowserRouter([
     {
@@ -33,11 +34,11 @@ const AppRoutes = () => {
         {
           index: true,
           element: <SignUpForm />,
-        },
-        {
-          path: "phone",
-          element: <PhoneInputForm />,
-        },
+        }
+        // {
+        //   path: "phone",
+        //   element: <PhoneInputForm />,
+        // },
       ],
     },
   ]);

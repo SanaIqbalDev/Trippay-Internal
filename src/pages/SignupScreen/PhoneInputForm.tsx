@@ -27,10 +27,13 @@ type FormValuesEmail = z.infer<typeof schemaEmail>;
 const { Option } = Select;
 interface PhoneInputFormProps {
   inputType: "phone" | "email";
-  codeVerified: (value:boolean) => void;
+  codeVerified: (value: boolean) => void;
 }
 
-const PhoneInputForm: React.FC<PhoneInputFormProps> = ({ inputType, codeVerified }) => {
+const PhoneInputForm: React.FC<PhoneInputFormProps> = ({
+  inputType,
+  codeVerified,
+}) => {
   const [phoneVal, setPhoneVal] = useState("");
   const [emailVal, setEmailVal] = useState("");
   const [authCodeVal, setAuthCodeVal] = useState("");
@@ -74,10 +77,13 @@ const PhoneInputForm: React.FC<PhoneInputFormProps> = ({ inputType, codeVerified
     setEmailVal(data.email);
     setIsEmailVerified(true);
   };
-  useEffect(()=> {
+  useEffect(() => {
     //add request to verify autherization code, and set codeVerified accordingly..
-    codeVerified(true);
-  },[authCodeVal]);
+    if (authCodeVal.length == 5) {
+      console.log("In input form :", authCodeVal);
+      codeVerified(true);
+    }
+  }, [authCodeVal]);
   return (
     <div className="login-container">
       {isPhoneVerified ? (
