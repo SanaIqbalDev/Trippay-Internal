@@ -2,12 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input, Select, Form, Image, Button, Space } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import ShieldIcon from "../../assets/icons/ic-shield.svg";
-import MobileIllustrationI from "../../assets/images/mobile-illustration-I.svg";
-import MobileIllustrationII from "../../assets/images/mobile-illustration-II.svg";
 import { z } from "zod";
-import { useEffect, useState } from "react";
-import AuthenticationCodeForm from "../../components/AuthenticationCodeForm";
-import { useNavigate } from "react-router-dom";
 
 const schemaPhone = z.object({
   countryCode: z.string().min(1, "Country code is required"),
@@ -27,20 +22,13 @@ type FormValuesEmail = z.infer<typeof schemaEmail>;
 const { Option } = Select;
 interface PhoneInputFormProps {
   inputType: "phone" | "email";
-  codeVerified: (value: boolean) => void;
+  getContactData: (value: string) => void;
 }
 
 const PhoneInputForm: React.FC<PhoneInputFormProps> = ({
   inputType,
-  codeVerified,
+  getContactData,
 }) => {
-  const [phoneVal, setPhoneVal] = useState("");
-  const [emailVal, setEmailVal] = useState("");
-  const [authCodeVal, setAuthCodeVal] = useState("");
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const navigate = useNavigate();
-
   const {
     control,
     handleSubmit,
@@ -67,134 +55,104 @@ const PhoneInputForm: React.FC<PhoneInputFormProps> = ({
   ];
 
   const onSubmitPhone = (data: FormValuesPhone) => {
-    console.log(data);
-    setPhoneVal(data.countryCode + data.phoneNumber);
-    setIsPhoneVerified(true);
+    console.log("Phone is:", data);
+    getContactData(data.countryCode + data.phoneNumber);
   };
 
   const onSubmitEmail = (data: FormValuesEmail) => {
-    console.log(data);
-    setEmailVal(data.email);
-    setIsEmailVerified(true);
+    console.log("Email is:", data);
+    getContactData(data.email);
   };
-  useEffect(() => {
-    //add request to verify autherization code, and set codeVerified accordingly..
-    if (authCodeVal.length == 5) {
-      console.log("In input form :", authCodeVal);
-      codeVerified(true);
-    }
-  }, [authCodeVal]);
+
   return (
-    <div className="login-container">
-      {isPhoneVerified ? (
-        <AuthenticationCodeForm
-          data={phoneVal}
-          getCode={setAuthCodeVal}
-          isPhone={true}
-        />
-      ) : isEmailVerified ? (
-        <AuthenticationCodeForm
-          data={emailVal}
-          getCode={setAuthCodeVal}
-          isPhone={false}
-        />
-      ) : (
-        <div className="form-container">
-          <Image src={ShieldIcon} preview={false} />
-          <div className="form-header">
-            <span className="main-heading">Almost Done!</span>
-            <span className="sub-heading">
-              Enter your {inputType}, we will send a verification code
-            </span>
-          </div>
-          <div className="form-content">
-            <Form
-              layout="vertical"
-              onFinish={
-                inputType === "phone"
-                  ? handleSubmit(onSubmitPhone)
-                  : handleSubmit(onSubmitEmail)
-              }
-            >
-              {inputType === "phone" ? (
-                <>
-                  <Form.Item
-                    label="Phone number*"
-                    validateStatus={errors.phoneNumber ? "error" : ""}
-                    help={errors.phoneNumber?.message}
-                  >
-                    <Space.Compact className="w-full">
-                      <Controller
-                        name="countryCode"
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            {...field}
-                            style={{ width: "35%" }}
-                            placeholder="code"
-                            defaultActiveFirstOption={true}
-                          >
-                            {countries.map((country) => (
-                              <Option
-                                key={country.code}
-                                value={country.code}
-                              >{`${country.name} ${country.code}`}</Option>
-                            ))}
-                          </Select>
-                        )}
-                      />
-                      <Controller
-                        name="phoneNumber"
-                        control={control}
-                        render={({ field }) => (
-                          <Input
-                            style={{ width: "65%" }}
-                            {...field}
-                            placeholder="Phone number"
-                          />
-                        )}
-                      />
-                    </Space.Compact>
-                    <span className="hidden py-2" style={{ color: "#ff4d4f" }}>
-                      Phone already registered
-                    </span>
-                  </Form.Item>
-                </>
-              ) : (
-                // Render email input field
-                <Form.Item
-                  label="Email*"
-                  validateStatus={errors.email ? "error" : ""}
-                  help={errors.email?.message}
-                >
+    <div className="form-container">
+      <Image src={ShieldIcon} preview={false} />
+      <div className="form-header">
+        <span className="main-heading">Almost Done!</span>
+        <span className="sub-heading">
+          Enter your {inputType}, we will send a verification code
+        </span>
+      </div>
+      <div className="form-content">
+        <Form
+          layout="vertical"
+          onFinish={
+            inputType === "phone"
+              ? handleSubmit(onSubmitPhone)
+              : handleSubmit(onSubmitEmail)
+          }
+        >
+          {inputType === "phone" ? (
+            <>
+              <Form.Item
+                label="Phone number*"
+                validateStatus={errors.phoneNumber ? "error" : ""}
+                help={errors.phoneNumber?.message}
+              >
+                <Space.Compact className="w-full">
                   <Controller
-                    name="email"
+                    name="countryCode"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} placeholder="Enter your email" />
+                      <Select
+                        {...field}
+                        style={{ width: "35%" }}
+                        placeholder="code"
+                        defaultActiveFirstOption={true}
+                      >
+                        {countries.map((country) => (
+                          <Option
+                            key={country.code}
+                            value={country.code}
+                          >{`${country.name} ${country.code}`}</Option>
+                        ))}
+                      </Select>
                     )}
                   />
-                </Form.Item>
-              )}
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  className="submitButton"
-                >
-                  Continue
-                </Button>
+                  <Controller
+                    name="phoneNumber"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        style={{ width: "65%" }}
+                        {...field}
+                        placeholder="Phone number"
+                      />
+                    )}
+                  />
+                </Space.Compact>
+                <span className="hidden py-2" style={{ color: "#ff4d4f" }}>
+                  Phone already registered
+                </span>
               </Form.Item>
-            </Form>
-          </div>
-        </div>
-      )}
-      <div className="login-image">
-        <Image
-          src={isPhoneVerified ? MobileIllustrationII : MobileIllustrationI}
-          preview={false}
-        />
+            </>
+          ) : (
+            // Render email input field
+            <Form.Item
+              label="Email*"
+              validateStatus={errors.email ? "error" : ""}
+              help={errors.email?.message}
+            >
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Enter your email" />
+                )}
+              />
+            </Form.Item>
+          )}
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              className="submitButton"
+            >
+              Continue
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </div>
   );

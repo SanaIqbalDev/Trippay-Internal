@@ -12,6 +12,7 @@ import {
 } from "antd";
 import { Header, Content } from "antd/es/layout/layout";
 import HeaderLogo from "../../assets/images/trippay-logo-header.svg";
+import TrippayLogo from "../../assets/images/trippay-text-logo.svg";
 import Avatar from "../../assets/icons/test-avatar.svg";
 import NotificationIcon from "../../assets/icons/ic-notification.svg";
 import UploadIcon from "../../assets/icons/ic-file-upload.svg";
@@ -20,11 +21,13 @@ import PDFIcon from "../../assets/icons/file-icon-pdf.svg";
 import { useState } from "react";
 import { RcFile } from "antd/es/upload";
 import { z } from "zod";
+import { Link } from "react-router-dom";
 
 const formSchema = z.object({
   nationality: z
     .string()
     .nonempty({ message: "Please select your nationality!" }),
+
   file: z
     .instanceof(File)
     .optional()
@@ -44,13 +47,12 @@ const CompleteAccount = () => {
   const [form] = Form.useForm();
   const [imageFileName, setImageFileName] = useState("");
   const [imageFileSize, setImageFileSize] = useState("");
+  const [fileUploaded, setFileUploaded] = useState(false); // Used to track file upload state
 
   const handleUpload = (info: any) => {
     if (info.file.status === "uploading") {
       setUploading(true);
-      // Mock the progress
-      setProgress(100); // or use info.file.percent if available
-      //   setUploading(false);
+      setProgress(100);
       return;
     }
     if (info.file.status === "done") {
@@ -72,24 +74,30 @@ const CompleteAccount = () => {
     return isImage;
   };
 
-  const handleFinish = async (values: FormInputs) => {
+  const handleFinish = async (values: any) => {
     try {
-      // Perform Zod validation
       formSchema.parse(values);
-      // If validation passes, handle your form submission
+      if (!fileUploaded) {
+        throw new Error("Please upload your ID document!");
+      }
       message.success("Form is valid! Submitting data...");
-      // ... submit to server or handle data
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // Handle the display of validation errors
+        // Handle Zod validation errors
         form.setFields(
           error.errors.map((err) => ({
             name: err.path[0],
             errors: [err.message],
           }))
         );
+        console.log("zod error:", error);
+      } else if (error instanceof Error) {
+        // Handle other errors (e.g., file upload not done)
+        message.error(error.message);
+        console.log("general error:", error);
       }
     }
+    setProcessCompleted(true);
   };
   const handleCustomRequest = (options: any) => {
     const { file, onSuccess, onError, onProgress } = options;
@@ -128,92 +136,127 @@ const CompleteAccount = () => {
       <Content className="flex top-20 justify-center">
         <div className="custom-modal">
           <div className="form-container" style={{ width: "100%" }}>
-            <div className="form-header" style={{ width: "100%" }}>
-              <span className="main-heading">Complete your account</span>
-              <span className="sub-heading">
-                If you are a citizen of more than one country, please pick one.
-              </span>
-            </div>
+            {processCompleted == false && (
+              <div className="form-header" style={{ width: "100%" }}>
+                <span className="main-heading">Complete your account</span>
+                <span className="sub-heading">
+                  If you are a citizen of more than one country, please pick
+                  one.
+                </span>
+              </div>
+            )}
             <div className="form-content" style={{ width: "100%" }}>
-              {processCompleted ? <div>
-                {/* <Image src={Logo}/> */}
-              </div> : <Form layout="vertical" onFinish={handleFinish}>
-                <Form.Item
-                  name="nationality"
-                  label="Nationality*"
-                  required={false}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select your nationality!",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Select your nationality">
-                    <Option value="KSA">KSA</Option>
-                    <Option value="Canada">Canada</Option>
-                    <Option value="Bahrain">Bahrain</Option>
-                    <Option value="UAE">UAE</Option>
-                  </Select>
-                </Form.Item>
-
-                <Form.Item
-                  name="id"
-                  label="ID*"
-                  required={false}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please upload your ID document!",
-                    },
-                  ]}
-                >
-                  <Flex
-                    vertical
-                    className=" flex flex-col justify-center items-center gap-3 p-4 border border-gray-300 rounded-xl bg-white"
-                  >
-                    <Upload
-                      name="file"
-                      action="/upload" // You should replace this with your actual upload URL
-                      onChange={handleUpload}
-                      beforeUpload={beforeUpload}
-                      showUploadList={false}
-                      customRequest={handleCustomRequest}
+              {processCompleted ? (
+                <div className="flex flex-col justify-between items-center gap-12">
+                  <Image src={TrippayLogo} preview={false} />
+                  <div className="flex flex-col justify-between items-center gap-3">
+                    <div
+                      style={{
+                        display: "block",
+                        width: "fit-content",
+                        border: "1px solid #FEDF89",
+                        borderRadius: "20px",
+                        padding: "2px 8px",
+                        backgroundColor: "#FFFAEB",
+                        color: "#B54708",
+                      }}
                     >
-                      <Image width={40} src={UploadIcon} preview={false} />{" "}
-                    </Upload>
-                    <span>Click to upload or drag and drop </span>
-                    <span>SVG, PNG, JPG or GIF (max. 800x400px)</span>
-                  </Flex>
-                </Form.Item>
-                {uploading && (
-                  <div className="flex flex-col gap-0 p-4 border border-gray-300 rounded-xl bg-white gap-2">
-                    <div className="flex flex-row gap-2">
-                      <Image src={PDFIcon} preview={false} />
-                      <div className="flex flex-col">
-                        <span style={{ fontSize: "14px", fontWeight: "500" }}>
-                          {imageFileName}
-                        </span>
-                        <span style={{ fontSize: "14px", fontWeight: "400" }}>
-                          {imageFileSize}
-                        </span>
-                      </div>
+                      <span className="text-xs font-medium align-middle"></span>
+                      In progress
                     </div>
-                    <Progress className="px-5" percent={progress} />
+                    <span className="main-heading">
+                      Your ID verification is in progress.
+                    </span>
+                    <span className="sub-heading">
+                      Once verified, your wallet will be created successfully
+                    </span>
                   </div>
-                )}
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    block
-                    //   disabled={uploading}
-                    onClick={() => setProcessCompleted(true)}
-                    className="submitButton"
+                  <Link to={"/home"} className="w-full">
+                    <Button type="primary" block className="submitButton">
+                      Home
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <Form layout="vertical" form={form} onFinish={handleFinish}>
+                  <Form.Item
+                    name="nationality"
+                    label="Nationality*"
+                    required={false}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select your nationality!",
+                      },
+                    ]}
                   >
-                    Continue
-                  </Button>
-                </Form.Item>
-              </Form>}
+                    <Select placeholder="Select your nationality">
+                      <Option value="KSA">KSA</Option>
+                      <Option value="Canada">Canada</Option>
+                      <Option value="Bahrain">Bahrain</Option>
+                      <Option value="UAE">UAE</Option>
+                    </Select>
+                  </Form.Item>
+
+                  <Form.Item
+                    name="id"
+                    label="ID*"
+                    required={false}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please upload your ID document!",
+                      },
+                    ]}
+                  >
+                    <Flex
+                      vertical
+                      className=" flex flex-col justify-center items-center gap-3 p-4 border border-gray-300 rounded-xl bg-white"
+                    >
+                      <Upload
+                        name="file"
+                        action="/upload" //replace this with your actual upload URL
+                        onChange={handleUpload}
+                        beforeUpload={beforeUpload}
+                        showUploadList={false}
+                        customRequest={handleCustomRequest}
+                      >
+                        <Image width={40} src={UploadIcon} preview={false} />{" "}
+                      </Upload>
+                      <span>Click to upload or drag and drop </span>
+                      <span>SVG, PNG, JPG or GIF (max. 800x400px)</span>
+                    </Flex>
+                  </Form.Item>
+                  {uploading && (
+                    <div className="flex flex-col gap-0 p-4 border border-gray-300 rounded-xl bg-white gap-2">
+                      <div className="flex flex-row gap-2">
+                        <Image src={PDFIcon} preview={false} />
+                        <div className="flex flex-col">
+                          <span style={{ fontSize: "14px", fontWeight: "500" }}>
+                            {imageFileName}
+                          </span>
+                          <span style={{ fontSize: "14px", fontWeight: "400" }}>
+                            {imageFileSize}
+                          </span>
+                        </div>
+                      </div>
+                      <Progress className="px-5" percent={progress} />
+                    </div>
+                  )}
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      block
+                      htmlType="submit"
+                      //   disabled={uploading}
+                      // onClick={() => setProcessCompleted(true)}
+                      className="submitButton"
+                    >
+                      Continue
+                    </Button>
+                  </Form.Item>
+                </Form>
+              )}
             </div>
           </div>
         </div>

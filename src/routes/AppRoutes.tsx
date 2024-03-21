@@ -4,9 +4,8 @@ import LoginScreen from "../pages/LoginScreen/LoginScreen";
 import LoginForm from "../pages/LoginScreen/LoginForm";
 import SignupScreen from "../pages/SignupScreen/SignupScreen";
 import SignUpForm from "../pages/SignupScreen/SignUpForm";
-import PhoneInputForm from "../pages/SignupScreen/PhoneInputForm";
 import ForgetPasswordScreen from "../pages/ForgetPassword/ForgetPasswordScreen";
-import AuthenticationCodeForm from "../components/AuthenticationCodeForm";
+import Home from "../pages/Dashboard/Home";
 const AppRoutes = () => {
   const router = createBrowserRouter([
     {
@@ -41,6 +40,10 @@ const AppRoutes = () => {
         // },
       ],
     },
+    {
+      path:"/home",
+      element:<Home/>,
+    }
   ]);
   return <RouterProvider router={router} />;
 };

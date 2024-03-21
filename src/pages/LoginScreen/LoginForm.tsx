@@ -3,8 +3,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, Input, Button, Checkbox, Image, Col, Row } from "antd";
 import TrippayLogo from "../../assets/images/trippay-logo.svg";
-import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { GoogleIconComponent } from "../../components/GoogleIconComponent";
 import AuthenticationCodeForm from "../../components/AuthenticationCodeForm";
 
@@ -17,7 +17,9 @@ const schema = z.object({
 type LoginFormInputs = z.infer<typeof schema>;
 
 const LoginForm: React.FC = () => {
+  const navigate = useNavigate();
   const [showCodeInput, setShowCodeInput] = useState(false);
+  const [userPhone, setUserPhone] = useState("");
   const [authCodeVal, setAuthCodeVal] = useState("");
 
   const {
@@ -30,12 +32,25 @@ const LoginForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
     console.log(data);
+    //verify user login credentials..
+    // If correct get user's phone number from his auth details and go to fetch auth token ...
+    setUserPhone("+96978787878");
     setShowCodeInput(true);
   };
+
+  useEffect(() => {
+    // add api request to verify that auth code user entered is the one sent to his phone...
+    // If correct, go to dashoboard...
+    authCodeVal.length == 5 && navigate("/home", { replace: true });
+  }, [authCodeVal]);
   return (
     <>
       {showCodeInput ? (
-        <AuthenticationCodeForm getCode={setAuthCodeVal} phone={""} />
+        <AuthenticationCodeForm
+          data={userPhone}
+          isPhone={true}
+          getCode={setAuthCodeVal}
+        />
       ) : (
         <div className="form-container">
           <div className="form-header">
@@ -96,11 +111,7 @@ const LoginForm: React.FC = () => {
                   </Col>
                   <Col>
                     <Link to={"/forgetpassword"}>
-                      <label
-                        className="forget-password"
-                      >
-                        Forget Password
-                      </label>
+                      <label className="forget-password">Forget Password</label>
                     </Link>
                   </Col>
                 </Row>

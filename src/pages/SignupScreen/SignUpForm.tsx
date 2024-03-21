@@ -3,6 +3,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, Input, Button, Checkbox, Image } from "antd";
 import TrippayLogo from "../../assets/images/trippay-logo.svg";
+import PhoneInputImage from "../../assets/images/mobile-illustration-I.svg";
+import PhoneInputImage_ from "../../assets/images/mobile-illustration-II.svg";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleIconComponent } from "../../components/GoogleIconComponent";
@@ -10,6 +12,7 @@ import AuthenticationCodeForm from "../../components/AuthenticationCodeForm";
 import SiderComponent from "../../components/SiderComponent";
 import PhoneInputForm from "./PhoneInputForm";
 import CompleteAccount from "./CompleteAccount";
+import OnboardingSider from "../../components/OnboardingSider";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -27,7 +30,7 @@ type SignupFormInputs = z.infer<typeof schema>;
 
 const SignUpForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState("signup");
-  const [authCodeVal, setAuthCodeVal] = useState("");
+  const [userPhone, setUserPhone] = useState("");
   const [submittedData, setSubmittedData] = useState<SignupFormInputs>();
   const [emailAuthCode, setEmailAuthCode] = useState("");
   const [phoneAuthCode, setPhoneAuthCode] = useState("");
@@ -47,18 +50,14 @@ const SignUpForm: React.FC = () => {
   };
 
   useEffect(() => {
-    if (authCodeVal.length == 5) {
-      setCurrentStep("completionStep1");
-      //add condition of if auth code is correct...
-      // if (currentStep == "emailAuth") {
-      //   setEmailAuthCode(authCodeVal);
-      //   setCurrentStep("getUserPhone");
-      // } else if (currentStep == "phoneAuth") {
-      //   setPhoneAuthCode(authCodeVal);
-      //   setCurrentStep("completionStep1");
-      // }
+    if (currentStep == "emailAuth" && emailAuthCode.length == 5) {
+      setCurrentStep("PhoneInput");
+    } else if (currentStep == "PhoneInput" && userPhone.length>0) {
+      setCurrentStep("phoneAuth");
+    } else if (currentStep == "phoneAuth" && phoneAuthCode.length == 5) {
+      setCurrentStep("completionStep");
     }
-  }, [authCodeVal]);
+  }, [currentStep, emailAuthCode, phoneAuthCode, userPhone]);
 
   switch (currentStep) {
     case "signup":
@@ -205,15 +204,37 @@ const SignUpForm: React.FC = () => {
 
     case "emailAuth":
       return (
-        <AuthenticationCodeForm
-          data={submittedData?.email}
-          isPhone={false}
-          getCode={setAuthCodeVal}
-        />
+        <div className="login-container">
+          <AuthenticationCodeForm
+            data={submittedData?.email}
+            isPhone={false}
+            getCode={setEmailAuthCode}
+          />
+          <SiderComponent />
+        </div>
       );
 
-    // case "getUserPhone": return <PhoneInputForm inputType="phone"/>
-    case "completionStep1":
+    case "PhoneInput":
+      return (
+        <div className="login-container">
+          <PhoneInputForm inputType="phone" getContactData={setUserPhone} />
+          <OnboardingSider siderImage={PhoneInputImage} />
+        </div>
+      );
+
+    case "phoneAuth":
+      return (
+        <div className="login-container">
+          <AuthenticationCodeForm
+            data={userPhone}
+            isPhone={true}
+            getCode={setPhoneAuthCode}
+          />
+
+          <OnboardingSider siderImage={PhoneInputImage_} />
+        </div>
+      );
+    case "completionStep":
       return <CompleteAccount />;
   }
 };

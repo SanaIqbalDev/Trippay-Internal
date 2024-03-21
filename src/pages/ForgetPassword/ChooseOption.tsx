@@ -4,11 +4,19 @@ import TrippayLogo from "../../assets/images/trippay-logo.svg";
 import EmailIcon from "../../assets/icons/ic-email.svg";
 import MobileIcon from "../../assets/icons/ic-mobile.svg";
 import NextIconInactive from "../../assets/icons/ic-right-inactive.svg";
+import { useState } from "react";
 
 interface ChooseOptionProps {
   selectedOption : (value:string) => void;
 }
 const ChooseOption : React.FC<ChooseOptionProps> = ({selectedOption}) => {
+
+  const [option, setOption] = useState("email");
+
+  const handleSelection = () => {
+    console.log(option);
+    selectedOption(option);
+  }
   return (
     <div className="login-container">
       <div className="form-container">
@@ -24,7 +32,8 @@ const ChooseOption : React.FC<ChooseOptionProps> = ({selectedOption}) => {
             <div className="flex flex-col gap-3">
               <Card
                 className="default-card"
-                onClick={() => selectedOption("email")}
+                onClick={() => {setOption("email");
+              handleSelection()}}
               >
                 <Row className="flex justify-between">
                   <Col className="flex gap-4">
@@ -45,7 +54,10 @@ const ChooseOption : React.FC<ChooseOptionProps> = ({selectedOption}) => {
               </Card>
               <Card
                 className="default-card"
-                onClick={() => selectedOption("phone")}
+                onClick={() => {
+                  setOption("phone");
+                  handleSelection();
+                }}
               >
                 <Row className="flex justify-between">
                   <Col className="flex gap-4">
@@ -67,9 +79,9 @@ const ChooseOption : React.FC<ChooseOptionProps> = ({selectedOption}) => {
             </div>
             <Button
               type="primary"
-              htmlType="submit"
               block
               className="submitButton"
+              onClick={()=> handleSelection()}
             >
               Continue
             </Button>
