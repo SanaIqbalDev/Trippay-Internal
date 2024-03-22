@@ -37,7 +37,6 @@ const formSchema = z.object({
     ),
 });
 
-type FormInputs = z.infer<typeof formSchema>;
 const { Option } = Select;
 
 const CompleteAccount = () => {
@@ -109,12 +108,12 @@ const CompleteAccount = () => {
 
     setImageFileName(file.name);
     setImageFileSize(file.size + " bytes");
-    // Now you can use fileType, fileSize, and fileName as needed
+
+
     console.log(
       `Uploading file: ${fileName}, Type: ${fileType}, Size: ${fileSize} bytes`
     );
 
-    // Rest of your custom upload logic...
   };
   return (
     <Layout className="w-full h-screen flex flex-col">
@@ -215,7 +214,6 @@ const CompleteAccount = () => {
                     >
                       <Upload
                         name="file"
-                        action="/upload" //replace this with your actual upload URL
                         onChange={handleUpload}
                         beforeUpload={beforeUpload}
                         showUploadList={false}
@@ -249,7 +247,6 @@ const CompleteAccount = () => {
                       block
                       htmlType="submit"
                       //   disabled={uploading}
-                      // onClick={() => setProcessCompleted(true)}
                       className="submitButton"
                     >
                       Continue

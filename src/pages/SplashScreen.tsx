@@ -11,8 +11,6 @@ const SplashScreen = () => {
         setIsLoading(false);
         navigate("/login");
     }, 3000);
-
-    // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
   }, [navigate]);
 
@@ -47,7 +45,6 @@ const SplashScreen = () => {
                 />
               </path>
             </svg>
-            {/* <Spin indicator={<LoadingOutlined/>} /> */}
             <span>Loading</span>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, Input, Button, Checkbox, Image, Col, Row } from "antd";
 import TrippayLogo from "../../assets/images/trippay-logo.svg";
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GoogleIconComponent } from "../../components/GoogleIconComponent";
 import AuthenticationCodeForm from "../../components/AuthenticationCodeForm";
 
@@ -124,7 +124,6 @@ const LoginForm: React.FC = () => {
                 }}
               >
                 <Form.Item className="formItem">
-                  {/* <Link to={`otp`}> */}
                   <Button
                     type="primary"
                     htmlType="submit"
@@ -133,7 +132,6 @@ const LoginForm: React.FC = () => {
                   >
                     Sign in
                   </Button>
-                  {/* </Link> */}
                 </Form.Item>
                 <Form.Item className="formItem">
                   <Button

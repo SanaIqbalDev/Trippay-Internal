@@ -276,8 +276,12 @@ body {
 .ant-layout .ant-layout-sider {
   background-color: #f9fafb;
 }
+.ant-layout .ant-layout-content {
+  height: 100vh;
+  overflow: auto;
+}
 .ant-menu-item,
-.ant-menu-submenu>* {
+.ant-menu-submenu > * {
   background-color: transparent;
   color: #344054;
   font-size: 16px;
@@ -285,7 +289,9 @@ body {
   gap: 12px;
 }
 .ant-menu-inline.ant-menu-root .ant-menu-item > .ant-menu-title-content,
-.ant-menu-inline.ant-menu-root .ant-menu-submenu-title >.ant-menu-title-content {
+.ant-menu-inline.ant-menu-root
+  .ant-menu-submenu-title
+  > .ant-menu-title-content {
   margin-inline-start: 0px;
   text-align: start;
 }
@@ -299,16 +305,34 @@ body {
 .ant-layout-sider-children {
   background-color: #f7f4fd;
 }
-.ant-menu-inline.ant-menu-root{
+.ant-menu-inline.ant-menu-root {
   background-color: transparent;
   padding: 0px 15px;
 }
-.ant-btn-primary{
+.ant-btn-primary {
   background-color: var(--brand-primary);
 }
-.stats-card, .stats-card .ant-card-body{
+.stats-card,
+.stats-card .ant-card-body {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.right-tabs > .ant-tabs-nav {
+  align-self: flex-end;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.12);
+}
+.right-tabs .ant-tabs-tab {
+  padding: 8px 16px;
+}
+.right-tabs .ant-tabs-tab .ant-tabs-tab-active{
+}
+
+.dashboard .ant-card{
+  border-radius: 24px;
+  padding: 12px;
 }

@@ -3,16 +3,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, Input, Button, Checkbox, Image } from "antd";
 import TrippayLogo from "../../assets/images/trippay-logo.svg";
-import PhoneInputImage from "../../assets/images/mobile-illustration-I.svg";
-import PhoneInputImage_ from "../../assets/images/mobile-illustration-II.svg";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { GoogleIconComponent } from "../../components/GoogleIconComponent";
-import AuthenticationCodeForm from "../../components/AuthenticationCodeForm";
 import SiderComponent from "../../components/SiderComponent";
-import PhoneInputForm from "./PhoneInputForm";
-import CompleteAccount from "./CompleteAccount";
-import OnboardingSider from "../../components/OnboardingSider";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -28,12 +21,10 @@ const schema = z.object({
 
 type SignupFormInputs = z.infer<typeof schema>;
 
-const SignUpForm: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState("signup");
-  const [userPhone, setUserPhone] = useState("");
-  const [submittedData, setSubmittedData] = useState<SignupFormInputs>();
-  const [emailAuthCode, setEmailAuthCode] = useState("");
-  const [phoneAuthCode, setPhoneAuthCode] = useState("");
+interface SignupFormProps {
+  formData: (values:SignupFormInputs) => void; 
+}
+const SignUpForm: React.FC<SignupFormProps>= ({formData}) => {
 
   const {
     control,
@@ -44,199 +35,144 @@ const SignUpForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
-    console.log(data);
-    setSubmittedData(data);
-    setCurrentStep("emailAuth");
+    formData(data);
   };
 
-  useEffect(() => {
-    if (currentStep == "emailAuth" && emailAuthCode.length == 5) {
-      setCurrentStep("PhoneInput");
-    } else if (currentStep == "PhoneInput" && userPhone.length>0) {
-      setCurrentStep("phoneAuth");
-    } else if (currentStep == "phoneAuth" && phoneAuthCode.length == 5) {
-      setCurrentStep("completionStep");
-    }
-  }, [currentStep, emailAuthCode, phoneAuthCode, userPhone]);
+  return (
+    <div className="login-container">
+      <div className="form-container">
+        <div className="form-header">
+          <Image src={TrippayLogo} preview={false} />
+          <span className="main-heading">Create your account</span>
+          <span className="sub-heading">
+            Let’s get started with a free account.
+          </span>
+        </div>
 
-  switch (currentStep) {
-    case "signup":
-      return (
-        <div className="login-container">
-          <div className="form-container">
-            <div className="form-header">
-              <Image src={TrippayLogo} preview={false} />
-              <span className="main-heading">Create your account</span>
-              <span className="sub-heading">
-                Let’s get started with a free account.
-              </span>
-            </div>
+        <div className="form-content">
+          <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+            <Form.Item
+              label="Name*"
+              validateStatus={errors.name ? "error" : ""}
+              help={errors.name?.message}
+            >
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input {...field} placeholder="Enter your name" />
+                )}
+              />
+            </Form.Item>
 
-            <div className="form-content">
-              <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-                <Form.Item
-                  label="Name*"
-                  validateStatus={errors.name ? "error" : ""}
-                  help={errors.name?.message}
-                >
-                  <Controller
-                    name="name"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <Input {...field} placeholder="Enter your name" />
-                    )}
-                  />
-                </Form.Item>
+            <Form.Item
+              label="Email*"
+              validateStatus={errors.email ? "error" : ""}
+              help={errors.email?.message}
+            >
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Enter your email" />
+                )}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Agency Name*"
+              validateStatus={errors.agencyName ? "error" : ""}
+              help={errors.agencyName?.message}
+            >
+              <Controller
+                name="agencyName"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Agency Name" />
+                )}
+              />
+            </Form.Item>
 
-                <Form.Item
-                  label="Email*"
-                  validateStatus={errors.email ? "error" : ""}
-                  help={errors.email?.message}
-                >
-                  <Controller
-                    name="email"
-                    control={control}
-                    render={({ field }) => (
-                      <Input {...field} placeholder="Enter your email" />
-                    )}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Agency Name*"
-                  validateStatus={errors.agencyName ? "error" : ""}
-                  help={errors.agencyName?.message}
-                >
-                  <Controller
-                    name="agencyName"
-                    control={control}
-                    render={({ field }) => (
-                      <Input {...field} placeholder="Agency Name" />
-                    )}
-                  />
-                </Form.Item>
+            <Form.Item
+              label="Password*"
+              validateStatus={errors.password ? "error" : ""}
+              help={errors.password?.message}
+            >
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-col">
+                    <Input {...field} placeholder="Create a password" />
+                    <span
+                      className="sub-heading"
+                      style={{ fontSize: "14px", textAlign: "start" }}
+                    >
+                      Must be at least 8 characters.
+                    </span>
+                  </div>
+                )}
+              />
+            </Form.Item>
 
-                <Form.Item
-                  label="Password*"
-                  validateStatus={errors.password ? "error" : ""}
-                  help={errors.password?.message}
-                >
-                  <Controller
-                    name="password"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="flex flex-col">
-                        <Input {...field} placeholder="Create a password" />
-                        <span
-                          className="sub-heading"
-                          style={{ fontSize: "14px", textAlign: "start" }}
-                        >
-                          Must be at least 8 characters.
-                        </span>
-                      </div>
-                    )}
-                  />
-                </Form.Item>
+            <Form.Item
+              validateStatus={errors.terms ? "error" : ""}
+              help={errors.terms?.message}
+            >
+              <Controller
+                name="terms"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Checkbox {...field} checked={field.value}>
+                    I certify that I’m 18 years of age or older, and I agree to
+                    the{" "}
+                    <span className="highlighted-text"> User Agreement</span>{" "}
+                    and{" "}
+                    <span className="highlighted-text">Privacy Policy.</span>
+                  </Checkbox>
+                )}
+              />
+            </Form.Item>
 
-                <Form.Item
-                  validateStatus={errors.terms ? "error" : ""}
-                  help={errors.terms?.message}
-                >
-                  <Controller
-                    name="terms"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <Checkbox {...field} checked={field.value}>
-                        I certify that I’m 18 years of age or older, and I agree
-                        to the{" "}
-                        <span className="highlighted-text">
-                          {" "}
-                          User Agreement
-                        </span>{" "}
-                        and{" "}
-                        <span className="highlighted-text">
-                          Privacy Policy.
-                        </span>
-                      </Checkbox>
-                    )}
-                  />
-                </Form.Item>
-
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    block
-                    className="submitButton"
-                  >
-                    Sign up
-                  </Button>
-                </Form.Item>
-                <Form.Item className="formItem">
-                  <Button
-                    block
-                    icon={<GoogleIconComponent />}
-                    className="googleButton"
-                  >
-                    Sign in with Google
-                  </Button>
-                </Form.Item>
-              </Form>
-            </div>
-            <span style={{ color: "#475467" }}>
-              Already have an account?
-              <span
-                style={{
-                  color: "#6941C6",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  marginLeft: "5px",
-                }}
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                className="submitButton"
               >
-                <Link to={"/login"}>Sign In</Link>
-              </span>
-            </span>
-          </div>
-          <SiderComponent />
+                Sign up
+              </Button>
+            </Form.Item>
+            <Form.Item className="formItem">
+              <Button
+                block
+                icon={<GoogleIconComponent />}
+                className="googleButton"
+              >
+                Sign in with Google
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
-      );
-
-    case "emailAuth":
-      return (
-        <div className="login-container">
-          <AuthenticationCodeForm
-            data={submittedData?.email}
-            isPhone={false}
-            getCode={setEmailAuthCode}
-          />
-          <SiderComponent />
-        </div>
-      );
-
-    case "PhoneInput":
-      return (
-        <div className="login-container">
-          <PhoneInputForm inputType="phone" getContactData={setUserPhone} />
-          <OnboardingSider siderImage={PhoneInputImage} />
-        </div>
-      );
-
-    case "phoneAuth":
-      return (
-        <div className="login-container">
-          <AuthenticationCodeForm
-            data={userPhone}
-            isPhone={true}
-            getCode={setPhoneAuthCode}
-          />
-
-          <OnboardingSider siderImage={PhoneInputImage_} />
-        </div>
-      );
-    case "completionStep":
-      return <CompleteAccount />;
-  }
+        <span style={{ color: "#475467" }}>
+          Already have an account?
+          <span
+            style={{
+              color: "#6941C6",
+              fontSize: "14px",
+              fontWeight: "600",
+              marginLeft: "5px",
+            }}
+          >
+            <Link to={"/login"}>Sign In</Link>
+          </span>
+        </span>
+      </div>
+      <SiderComponent />
+    </div>
+  );
 };
 
 export default SignUpForm;

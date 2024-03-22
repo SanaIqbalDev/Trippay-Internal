@@ -1,15 +1,21 @@
 import React from "react";
-import { Row, Col, Card, Statistic, Tabs, Button, Image } from "antd";
-import { ArrowUpOutlined, ArrowDownOutlined, ExportOutlined, MenuOutlined } from "@ant-design/icons";
+import { Row, Col, Card, Tabs, Button, Image } from "antd";
+import {
+  ArrowUpOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 import SuccessGraph from "../../assets/images/success-graph.svg";
 import FailureGraph from "../../assets/images/failure-graph.svg";
-// You would also import your chart library and components here
+import IconDropdown from "../../assets/icons/ic-dropdown.svg";
+
+import MonthlySpending from "./MonthlySpending";
+import YourSpending from "./YourSpending";
 
 const { TabPane } = Tabs;
 
 const Dashboard: React.FC = () => {
   return (
-    <div className="flex flex-col gap-8 m-6">
+    <div className="dashboard flex flex-col gap-8 m-6">
       <Row justify={"space-between"}>
         <Col>
           <div className="flex flex-col gap-1">
@@ -37,7 +43,8 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
             <div className="flex flex-col justify-between items-end">
-              <MenuOutlined />
+              <Image src={IconDropdown} preview={false} />
+
               <Image src={SuccessGraph} preview={false} />
             </div>
           </Card>
@@ -53,7 +60,8 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
             <div className="flex flex-col justify-between items-end">
-              <MenuOutlined />
+              <Image src={IconDropdown} preview={false} />
+
               <Image src={FailureGraph} preview={false} />
             </div>
           </Card>
@@ -70,7 +78,8 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
             <div className="flex flex-col justify-between items-end">
-              <MenuOutlined />
+              <Image src={IconDropdown} preview={false} />
+
               <Image src={SuccessGraph} preview={false} />
             </div>
           </Card>
@@ -78,28 +87,16 @@ const Dashboard: React.FC = () => {
       </Row>
 
       <Row gutter={[16, 16]}>
-        {/* Monthly Spending Donut Chart */}
         <Col span={12}>
           <Card>
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="This month" key="1" />
-              <TabPane tab="Last month" key="2" />
-              <TabPane tab="Custom" key="3" />
-            </Tabs>
-            {/* Donut Chart Component here */}
+            <MonthlySpending />
           </Card>
         </Col>
 
         {/* Spending Details */}
         <Col span={12}>
           <Card>
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="Overview" key="1" />
-              <TabPane tab="Budget" key="2" />
-              <TabPane tab="Spending" key="3" />
-              <TabPane tab="Rewards" key="4" />
-            </Tabs>
-            {/* Spending Details Components here */}
+            <YourSpending />
           </Card>
         </Col>
       </Row>
@@ -108,11 +105,14 @@ const Dashboard: React.FC = () => {
         {/* Balance Over Time Line Chart */}
         <Col span={12}>
           <Card>
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="12 months" key="1" />
-              <TabPane tab="30 days" key="2" />
-              <TabPane tab="7 days" key="3" />
-            </Tabs>
+            <Tabs
+              defaultActiveKey="1"
+              items={[
+                { label: "12 months", key: "1" },
+                { label: "30 days", key: "2" },
+                { label: "7 days", key: "3" },
+              ]}
+            ></Tabs>
             {/* Line Chart Component here */}
           </Card>
         </Col>
@@ -120,11 +120,14 @@ const Dashboard: React.FC = () => {
         {/* Balance Over Time Bar Chart */}
         <Col span={12}>
           <Card>
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="12 months" key="1" />
-              <TabPane tab="30 days" key="2" />
-              <TabPane tab="7 days" key="3" />
-            </Tabs>
+            <Tabs
+              defaultActiveKey="1"
+              items={[
+                { label: "12 months", key: "1" },
+                { label: "30 days", key: "2" },
+                { label: "7 days", key: "3" },
+              ]}
+            ></Tabs>
             {/* Bar Chart Component here */}
             <Button type="primary">View full report</Button>
           </Card>
