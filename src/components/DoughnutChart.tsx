@@ -46,19 +46,12 @@ const data: ChartData<"doughnut"> = {
 
 const options: ChartOptions<"doughnut"> = {
   plugins: {
-    title: {
-      display: true,
-      text: "Employee Overview",
-      font: {
-        weight: "bold",
-        size: 20,
-      },
-    },
+   
     legend: {
       display: false,
     },
     centerText: {
-      text: "$2,280",
+      text: "$2400",
     },
   },
   cutout: "75%",

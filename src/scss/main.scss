@@ -6,6 +6,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@mixin tabs-container-style {
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.12);
+}
+
 * {
   margin: 0%;
 }
@@ -322,17 +328,31 @@ body {
 
 .right-tabs > .ant-tabs-nav {
   align-self: flex-end;
-  border: 1px solid #d0d5dd;
-  border-radius: 8px;
-  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.12);
+  @include tabs-container-style;
 }
 .right-tabs .ant-tabs-tab {
   padding: 8px 16px;
-}
-.right-tabs .ant-tabs-tab .ant-tabs-tab-active{
 }
 
 .dashboard .ant-card{
   border-radius: 24px;
   padding: 12px;
+}
+
+.tabs-container{
+  @include tabs-container-style;
+  width: max-content;
+  display: flex;
+  flex-direction: row;
+}
+.tabs-container .ant-btn-text{
+  border-radius: 0;
+  font-weight: 600;
+}
+.ant-divider-vertical{
+  height: unset;
+  top: 0;
+  margin-inline: 0px;
+  border-color:  #d0d5dd;
+
 }

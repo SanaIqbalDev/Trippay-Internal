@@ -1,9 +1,6 @@
 import React from "react";
 import { Row, Col, Card, Tabs, Button, Image } from "antd";
-import {
-  ArrowUpOutlined,
-  ExportOutlined,
-} from "@ant-design/icons";
+import { ArrowUpOutlined, ExportOutlined } from "@ant-design/icons";
 import SuccessGraph from "../../assets/images/success-graph.svg";
 import FailureGraph from "../../assets/images/failure-graph.svg";
 import IconDropdown from "../../assets/icons/ic-dropdown.svg";
@@ -118,20 +115,7 @@ const Dashboard: React.FC = () => {
         </Col>
 
         {/* Balance Over Time Bar Chart */}
-        <Col span={12}>
-          <Card>
-            <Tabs
-              defaultActiveKey="1"
-              items={[
-                { label: "12 months", key: "1" },
-                { label: "30 days", key: "2" },
-                { label: "7 days", key: "3" },
-              ]}
-            ></Tabs>
-            {/* Bar Chart Component here */}
-            <Button type="primary">View full report</Button>
-          </Card>
-        </Col>
+        <Col span={12}></Col>
       </Row>
     </div>
   );
